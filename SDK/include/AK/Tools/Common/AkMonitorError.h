@@ -21,8 +21,8 @@ under the Apache License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES
 OR CONDITIONS OF ANY KIND, either express or implied. See the Apache License for
 the specific language governing permissions and limitations under the License.
 
-  Version: 2016.1  Build: 5775
-  Copyright (c) 2016 Audiokinetic Inc.
+  Version: v2017.1.0  Build: 6302
+  Copyright (c) 2006-2017 Audiokinetic Inc.
 *******************************************************************************/
 
 #ifndef _AKMONITORERROR_H
@@ -63,12 +63,11 @@ namespace AK
 			ErrorCode_PluginAllocationFailed,
 
 			ErrorCode_VorbisRequireSeekTable,
-			ErrorCode_VorbisRequireSeekTableVirtual,
 
 			ErrorCode_VorbisDecodeError,
 			ErrorCode_AACDecodeError,
 			
-			ErrorCode_xWMACreateDecoderFailed,
+			ErrorCode_xWMACreateDecoderFailed,//Deprecated, keep in place for legacy maintenance.
 
 			ErrorCode_ATRAC9CreateDecoderFailed,
 			ErrorCode_ATRAC9CreateDecoderFailedChShortage,
@@ -131,7 +130,12 @@ namespace AK
 			ErrorCode_SeekAfterEof,
 
 			ErrorCode_UnknownGameObject,
+			ErrorCode_UnknownEmitter, 
+			ErrorCode_UnknownListener, 
+			ErrorCode_GameObjectIsNotListener,
+			ErrorCode_GameObjectIsNotEmitter,
 			ErrorCode_UnknownGameObjectEvent,
+			ErrorCode_GameObjectIsNotEmitterEvent,
 
 			ErrorCode_ExternalSourceNotResolved,
 			ErrorCode_FileFormatMismatch,
@@ -139,17 +143,17 @@ namespace AK
 			ErrorCode_CommandQueueFull,
 			ErrorCode_CommandTooLarge,
 
-			ErrorCode_ExecuteActionOnEvent,
-			ErrorCode_StopAll,
-			ErrorCode_StopPlayingID,
-			ErrorCode_PostMIDIOnEvent,
-			ErrorCode_StopAllMIDI,
-
 			ErrorCode_XMACreateDecoderLimitReached,
 			ErrorCode_XMAStreamBufferTooSmall,
 
 			ErrorCode_ModulatorScopeError_Inst,
 			ErrorCode_ModulatorScopeError_Obj,
+
+			ErrorCode_SeekAfterEndOfPlaylist,
+
+			ErrorCode_OpusRequireSeekTable,
+			ErrorCode_OpusDecodeError,
+			ErrorCode_OpusCreateDecoderFailed,
 
 			Num_ErrorCodes // THIS STAYS AT END OF ENUM
 		};
@@ -173,7 +177,11 @@ namespace AK
 		///			called in the optimized/release configuration and return AK_NotCompatible.
 		AK_EXTERNAPIFUNC( AKRESULT, PostCode )( 
 			ErrorCode in_eError,		///< Message or error code to be displayed
-			ErrorLevel in_eErrorLevel	///< Specifies whether it should be displayed as a message or an error
+			ErrorLevel in_eErrorLevel,	///< Specifies whether it should be displayed as a message or an error
+			AkPlayingID in_playingID = AK_INVALID_PLAYING_ID,   ///< Related Playing ID if applicable
+			AkGameObjectID in_gameObjID = AK_INVALID_GAME_OBJECT, ///< Related Game Object ID if applicable, AK_INVALID_GAME_OBJECT otherwise
+			AkUniqueID in_audioNodeID = AK_INVALID_UNIQUE_ID, ///< Related Audio Node ID if applicable, AK_INVALID_UNIQUE_ID otherwise
+			bool in_bIsBus = false		///< true if in_audioNodeID is a bus
 			);
 #ifdef AK_SUPPORT_WCHAR
 		/// Post a unicode monitoring message or error string. This will be displayed in the Wwise capture
@@ -184,7 +192,11 @@ namespace AK
 		///			called in the optimized/release configuration and return AK_NotCompatible.
 		AK_EXTERNAPIFUNC( AKRESULT, PostString )( 
 			const wchar_t* in_pszError,	///< Message or error string to be displayed
-			ErrorLevel in_eErrorLevel	///< Specifies whether it should be displayed as a message or an error
+			ErrorLevel in_eErrorLevel,	///< Specifies whether it should be displayed as a message or an error
+			AkPlayingID in_playingID = AK_INVALID_PLAYING_ID,   ///< Related Playing ID if applicable
+			AkGameObjectID in_gameObjID = AK_INVALID_GAME_OBJECT, ///< Related Game Object ID if applicable, AK_INVALID_GAME_OBJECT otherwise
+			AkUniqueID in_audioNodeID = AK_INVALID_UNIQUE_ID, ///< Related Audio Node ID if applicable, AK_INVALID_UNIQUE_ID otherwise
+			bool in_bIsBus = false		///< true if in_audioNodeID is a bus
 			);
 #endif // #ifdef AK_SUPPORT_WCHAR
 		/// Post a monitoring message or error string. This will be displayed in the Wwise capture
@@ -195,7 +207,11 @@ namespace AK
 		///			called in the optimized/release configuration and return AK_NotCompatible.
 		AK_EXTERNAPIFUNC( AKRESULT, PostString )( 
 			const char* in_pszError,	///< Message or error string to be displayed
-			ErrorLevel in_eErrorLevel	///< Specifies whether it should be displayed as a message or an error
+			ErrorLevel in_eErrorLevel,	///< Specifies whether it should be displayed as a message or an error
+			AkPlayingID in_playingID = AK_INVALID_PLAYING_ID,   ///< Related Playing ID if applicable
+			AkGameObjectID in_gameObjID = AK_INVALID_GAME_OBJECT, ///< Related Game Object ID if applicable, AK_INVALID_GAME_OBJECT otherwise
+			AkUniqueID in_audioNodeID = AK_INVALID_UNIQUE_ID, ///< Related Audio Node ID if applicable, AK_INVALID_UNIQUE_ID otherwise
+			bool in_bIsBus = false		///< true if in_audioNodeID is a bus
 			);
 
 		/// Enable/Disable local output of monitoring messages or errors. Pass 0 to disable,
@@ -208,7 +224,7 @@ namespace AK
 			);
 
 		/// Get the time stamp shown in the capture log along with monitoring messages.
-		/// \return AK_Success.
+		/// \return Time stamp in milliseconds.
 		///			In optimized/release configuration, this function returns 0.
 		AK_EXTERNAPIFUNC( AkTimeMs, GetTimeStamp )();
 	}
@@ -244,7 +260,6 @@ namespace AK
 			AKTEXT("Could not allocate effect"), // ErrorCode_PluginAllocationFailed
 
 			AKTEXT("Seek table required to seek in Vorbis sources. Please update conversion settings."), // ErrorCode_VorbisRequireSeekTable,
-			AKTEXT("Seek table needed for Vorbis audio format with this virtual voice behavior. Please update conversion settings or virtual mode."), // ErrorCode_VorbisRequireSeekTableVirtual,
 
 			AKTEXT("Vorbis decoder failure"), // ErrorCode_VorbisDecodeError,
 			AKTEXT("AAC decoder failure"), // ErrorCode_AACDecodeError
@@ -287,7 +302,7 @@ namespace AK
 
 			AKTEXT("Plug-in not registered"), // ErrorCode_PluginNotRegistered,
 			AKTEXT("Codec plug-in not registered"), // ErrorCode_CodecNotRegistered,
-			AKTEXT("Plug-in version doesn't match sound engine version.  Check your build setup"), //ErrorCode_PluginVersionMismatch
+			AKTEXT("Plug-in version doesn't match sound engine version.  Please ensure the plug-in is compatible with this version of Wwise"), //ErrorCode_PluginVersionMismatch
 
 			AKTEXT("Event ID not found"), // ErrorCode_EventIDNotFound,
 
@@ -313,24 +328,31 @@ namespace AK
 			AKTEXT("Seeking after end of file. Playback will stop"), // ErrorCode_SeekAfterEof
 
 			AKTEXT("Unknown game object ID. Make sure the game object is registered before using it and do not use it once it was unregistered."), // ErrorCode_UnknownGameObject,
-			AKTEXT("Unknown game object ID on event. Make sure the game object is registered before using it and do not use it once it was unregistered."), // ErrorCode_UnknownGameObjectEvent
+
+			AKTEXT("Unknown emitter game object ID. Make sure the game object is registered before using it and do not use it once it was unregistered."), // ErrorCode_UnknownEmitter,
+			AKTEXT("Unknown listener game object ID. Make sure the game object is registered before using it and do not use it once it was unregistered."), // ErrorCode_UnknownListener,
+			AKTEXT("The requested game object is not a listener."), // ErrorCode_GameObjectIsNotListener,
+			AKTEXT("The requested game object is not an emitter."), // ErrorCode_GameObjectIsNotEmitter,
+			
+			AKTEXT("Unknown emitter game object ID on event. Make sure the game object is registered before using it and do not use it once it was unregistered."), // ErrorCode_UnknownGameObjectEvent
+			AKTEXT("The requested game object for an event was not registered as an emitter. Make sure the game object is registered as an emitter before using it to post an event."), // ErrorCode_GameObjectIsNotEmitterEvent
 
 			AKTEXT("External source missing from PostEvent call"), // ErrorCode_ExternalSourceNotResolved
 			AKTEXT("Source file is of different format than expected"), //ErrorCode_FileFormatMismatch
 			AKTEXT("Audio command queue is full, blocking caller.  Reduce number of calls to sound engine or boost command queue memory."), // ErrorCode_CommandQueueFull
 			AKTEXT("Audio command is too large to fit in the command queue.  Break the command in smaller pieces."), //ErrorCode_CommandTooLarge
 
-			AKTEXT("ExecuteActionOnEvent API called"), // ErrorCode_ExecuteActionOnEvent
-			AKTEXT("StopAll API called"), // ErrorCode_StopAll
-			AKTEXT("StopPlayingID API called"), // ErrorCode_StopPlayingID
-			AKTEXT("PostMIDIOnEvent API called"), // ErrorCode_PostMIDIOnEvent
-			AKTEXT("StopAllMIDI API called"), // ErrorCode_StopAllMIDI
-
 			AKTEXT("Failed creating XMA decoder: no more XMA voices available"), // ErrorCode_XMACreateDecoderLimitReached
 			AKTEXT("Failed seeking in XMA source: stream buffer is smaller than XMA block size"), // ErrorCode_XMAStreamBufferTooSmall
 
 			AKTEXT("Triggered a note-scoped or playing-instance-scoped modulator in a global context (such as a bus or bus effect).  Modulator will have global scope."), // ErrorCode_ModulatorScopeError_Inst
-			AKTEXT("Triggered a game-object-scoped modulator in a global context (such as a bus or bus effect).  Modulator will have global scope.") // ErrorCode_ModulatorScopeError_Obj
+			AKTEXT("Triggered a game-object-scoped modulator in a global context (such as a bus or bus effect).  Modulator will have global scope."), // ErrorCode_ModulatorScopeError_Obj
+
+			AKTEXT("Ignoring seek after end of playlist"), // ErrorCode_SeekAfterEndOfPlaylist
+			
+			AKTEXT("Seek table required to seek in Opus sources. Please update conversion settings."), // ErrorCode_OpusRequireSeekTable,
+			AKTEXT("Opus decoder failure"), // ErrorCode_OpusDecodeError,
+			AKTEXT("Failed creating Opus decoder"), // ErrorCode_OpusCreateDecoderFailed
 		};
 	}
 }

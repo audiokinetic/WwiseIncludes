@@ -21,8 +21,8 @@ under the Apache License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES
 OR CONDITIONS OF ANY KIND, either express or implied. See the Apache License for
 the specific language governing permissions and limitations under the License.
 
-  Version: 2016.1  Build: 5775
-  Copyright (c) 2016 Audiokinetic Inc.
+  Version: v2017.1.0  Build: 6302
+  Copyright (c) 2006-2017 Audiokinetic Inc.
 *******************************************************************************/
 
 #pragma once
@@ -46,15 +46,16 @@ namespace MotionEngine
 	/// - AK_Fail if the device could not be initialized.  Usually this means the drivers are not installed.
 	/// \sa
 	/// - \ref integrating_elements_motion
-	AK_EXTERNAPIFUNC( AKRESULT, AddPlayerMotionDevice )(
+	AK_EXTERNAPIFUNC(AKRESULT, AddPlayerMotionDevice)(
 		AkUInt8 in_iPlayerID,			///< Player number, must be between 0 and 3.  See platform-specific documentation for more details.
 		AkUInt32 in_iCompanyID,			///< Company ID providing support for the device
 		AkUInt32 in_iDeviceID,			///< Device ID, must be one of the currently supported devices. 
-		void* in_pDevice = NULL			///< PS4: PS4 Device handle, returned by scePadOpen. 
+		void* in_pDevice = NULL,		///< PS4: PS4 Device handle, returned by scePadOpen. 
 										///< Windows: Windows Direct Input Device reference for DirectInput. NULL to use XInput. 
-										///< WiiU: Use AK_MOTION_WIIMOTE_DEVICE to add a Wiimote or AK_MOTION_DRC_DEVICE to add a DRC device. 
 										///< XboxOne: Use IGamepad::Id. 
-										///> Keep NULL for all other platforms.
+										///< Motion plugins: see plugin vendor documentation.
+										///< Keep NULL for all other device types.										
+		AkUInt32 in_uSize = 0			///< Reserved for plugins. Keep to zero unless plugin usage mandates it.
 		);
 
 	/// Disconnects a motion device from a player port.  Call this function from your game to tell the motion engine that
@@ -73,8 +74,8 @@ namespace MotionEngine
 	/// - \ref integrating_elements_motion
 	/// - \ref soundengine_listeners 
 	AK_EXTERNAPIFUNC( void, SetPlayerListener )(
-		AkUInt8 in_iPlayerID,					///< Player ID, between 0 and 3
-		AkUInt8 in_iListener					///< Listener ID, between 0 and 7
+		AkUInt8 in_iPlayerID,				///< Player ID, between 0 and 3
+		AkGameObjectID in_uListenerID		///< Listener game object ID
 		);
 
 	/// Set the master volume for a player.  All devices assigned to this player will be affected by this volume.

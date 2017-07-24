@@ -21,8 +21,8 @@ under the Apache License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES
 OR CONDITIONS OF ANY KIND, either express or implied. See the Apache License for
 the specific language governing permissions and limitations under the License.
 
-  Version: 2016.1  Build: 5775
-  Copyright (c) 2016 Audiokinetic Inc.
+  Version: v2017.1.0  Build: 6302
+  Copyright (c) 2006-2017 Audiokinetic Inc.
 *******************************************************************************/
 
 /// \file
@@ -96,7 +96,7 @@ namespace AK
 		/// License type.
 		enum LicenseType
 		{
-			LicenseType_Trial = 1,
+			LicenseType_Trial = 1, ///< Note: LicenseType_Trial is used for both Trial and Evaluation Licence handling.
 			LicenseType_Purchased,
 			LicenseType_Academic
 		};
@@ -106,17 +106,19 @@ namespace AK
 		{
 			LicenseStatus_Unlicensed,
 			LicenseStatus_Expired,
-			LicenseStatus_Valid
+			LicenseStatus_Valid,
+
+			LicenseStatus_Incompatible		//the plugin is for an older version of wwise
 		};
 
 		/// Log message severity.
 		enum Severity
 		{
-			Severity_Success = -1,	/// operation was executed without errors or will not produce errors
-			Severity_Message,		/// not impacting the integrity of the current operation
-			Severity_Warning,		/// potentially impacting the integrity of the current operation
-			Severity_Error,			/// impacting the integrity of the current operation
-			Severity_FatalError,	/// impacting the completion of the current operation
+			Severity_Success = -1,	///< operation was executed without errors or will not produce errors
+			Severity_Message,		///< not impacting the integrity of the current operation
+			Severity_Warning,		///< potentially impacting the integrity of the current operation
+			Severity_Error,			///< impacting the integrity of the current operation
+			Severity_FatalError,	///< impacting the completion of the current operation
 					
 		};
 

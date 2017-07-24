@@ -21,8 +21,8 @@ under the Apache License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES
 OR CONDITIONS OF ANY KIND, either express or implied. See the Apache License for
 the specific language governing permissions and limitations under the License.
 
-  Version: 2016.1  Build: 5775
-  Copyright (c) 2016 Audiokinetic Inc.
+  Version: v2017.1.0  Build: 6302
+  Copyright (c) 2006-2017 Audiokinetic Inc.
 *******************************************************************************/
 
 /// \file
@@ -49,8 +49,8 @@ namespace AK
 		/// \return	True if the operation was successful, False otherwise
 		virtual bool ReadBytes( 
 			void * in_pData,		///< Pointer to a buffer
-			long in_cBytes,			///< Size of the buffer (in bytes)
-			long & out_cRead 		///< Returned number of read bytes
+			AkInt32 in_cBytes,			///< Size of the buffer (in bytes)
+			AkInt32 & out_cRead 		///< Returned number of read bytes
 			) = 0;
 
 		//@}
@@ -66,7 +66,7 @@ namespace AK
 		bool Read( 
 			T & out_data )	///< Data to be read
 		{
-			long cRead;
+			AkInt32 cRead;
 			return ReadBytes( &out_data, sizeof( T ), cRead );
 		}
 
@@ -79,7 +79,7 @@ namespace AK
 		{
 			T value;
 
-			long cRead;
+			AkInt32 cRead;
 			ReadBytes( &value, sizeof( T ), cRead );
 
 			return value;
@@ -89,42 +89,42 @@ namespace AK
 		/// \return	True if the operation was successful, False otherwise. An insufficient buffer size does not cause failure.
 		bool ReadString( 
 			wchar_t * out_pszString,	///< Pointer to a fixed-size buffer
-			long in_nMax )			///< Maximum number of characters to be read in out_pszString, including the terminating NULL character
+			AkInt32 in_nMax )			///< Maximum number of characters to be read in out_pszString, including the terminating NULL character
 		{
-			long cChars;
-			if ( !Read<long>( cChars ) ) 
+			AkInt32 cChars;
+			if ( !Read<AkInt32>( cChars ) ) 
 				return false;
 
 			bool bRet = true;
 
 			if ( cChars > 0 )
 			{
-				long cRead;
+				AkInt32 cRead;
 
 				if ( cChars < in_nMax )
 				{
 					ReadBytes( out_pszString, cChars * sizeof( wchar_t ), cRead );
 					out_pszString[ cChars ] = 0;
 
-					bRet = cRead == (long)( cChars * sizeof( wchar_t ) );
+					bRet = cRead == (AkInt32)( cChars * sizeof( wchar_t ) );
 				}
 				else
 				{
 					ReadBytes( out_pszString, in_nMax * sizeof( wchar_t ), cRead );
 					out_pszString[ in_nMax - 1 ] = 0;
 
-					bRet = cRead == (long)( cChars * sizeof( wchar_t ) );
+					bRet = cRead == (AkInt32)( in_nMax * sizeof(wchar_t));
 
 					if ( bRet )
 					{
 						// Read extra characters in temp buffer.
-						long cRemaining = cChars - in_nMax;
+						AkInt32 cRemaining = cChars - in_nMax;
 
 						wchar_t * pTemp = new wchar_t[ cRemaining ];
 
 						ReadBytes( pTemp, cRemaining * sizeof( wchar_t ), cRead );
 
-						bRet = cRemaining == (long)( cChars * sizeof( wchar_t ) );
+						bRet = cRead == (AkInt32)(cRemaining * sizeof(wchar_t));
 
 						delete [] pTemp;
 					}

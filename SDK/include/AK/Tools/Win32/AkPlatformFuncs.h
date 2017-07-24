@@ -21,18 +21,9 @@ under the Apache License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES
 OR CONDITIONS OF ANY KIND, either express or implied. See the Apache License for
 the specific language governing permissions and limitations under the License.
 
-  Version: 2016.1  Build: 5775
-  Copyright (c) 2016 Audiokinetic Inc.
+  Version: v2017.1.0  Build: 6302
+  Copyright (c) 2006-2017 Audiokinetic Inc.
 *******************************************************************************/
-//////////////////////////////////////////////////////////////////////
-//
-// AkPlatformFuncs.h
-//
-// Audiokinetic platform-dependent functions definition.
-//
-// Copyright (c) 2006 Audiokinetic Inc. / All Rights Reserved
-//
-//////////////////////////////////////////////////////////////////////
 
 #ifndef _AK_PLATFORM_FUNCS_H_
 #define _AK_PLATFORM_FUNCS_H_
@@ -44,10 +35,6 @@ the specific language governing permissions and limitations under the License.
 //#define AK_ENABLE_PERF_RECORDING
 #if defined(AK_ENABLE_PERF_RECORDING)
 #include <stdio.h>
-#endif
-
-#ifdef AK_USE_THREAD_EMULATION
-	#include <AK/Tools/Win32/ThreadEmulation.h>
 #endif
 
 #if defined(_WIN64)
@@ -63,7 +50,11 @@ the specific language governing permissions and limitations under the License.
 struct AkThreadProperties
 {
     int                 nPriority;		///< Thread priority
-    AkUInt32            dwAffinityMask;	///< Affinity mask
+#ifdef AK_WIN_UNIVERSAL_APP
+	PROCESSOR_NUMBER    processorNumber;///< Ideal processor (passed to SetThreadIdealProcessorEx)
+#else
+	AkUInt32            dwAffinityMask;	///< Affinity mask
+#endif
 	AkUInt32			uStackSize;		///< Thread stack size.
 };
 
@@ -117,7 +108,7 @@ namespace AKPLATFORM
 	/// Platform Independent Helper
 	inline AKRESULT AkCreateEvent( AkEvent & out_event )
     {
-#ifdef AK_USE_METRO_API
+#ifdef AK_USE_UWP_API
 		out_event = CreateEventEx(nullptr, nullptr, 0, STANDARD_RIGHTS_ALL|EVENT_MODIFY_STATE);
 #else
 		out_event = ::CreateEvent( NULL,					// No security attributes
@@ -140,7 +131,7 @@ namespace AKPLATFORM
 	/// Platform Independent Helper
 	inline void AkWaitForEvent( AkEvent & in_event )
 	{
-#ifdef AK_USE_METRO_API
+#ifdef AK_USE_UWP_API
 #ifdef AK_ENABLE_ASSERTS
 		DWORD dwWaitResult = 
 #endif // AK_ENABLE_ASSERTS
@@ -162,31 +153,31 @@ namespace AKPLATFORM
     // ------------------------------------------------------------------
 
 	/// Platform Independent Helper
-	inline AkInt32 AkInterlockedIncrement( AkInt32 * pValue )
+	inline AkInt32 AkInterlockedIncrement(AkAtomic32 * pValue)
 	{
 		return InterlockedIncrement( pValue );
 	}
 
 	/// Platform Independent Helper
-	inline AkInt32 AkInterlockedDecrement( AkInt32 * pValue )
+	inline AkInt32 AkInterlockedDecrement(AkAtomic32 * pValue)
 	{
 		return InterlockedDecrement( pValue );
 	}
 
 #ifdef AK_CPU_X86_64
-	inline bool AkInterlockedCompareExchange( volatile AkInt64* io_pDest, AkInt64 in_newValue, AkInt64 in_expectedOldVal )
+	inline bool AkInterlockedCompareExchange( volatile AkAtomic64* io_pDest, AkInt64 in_newValue, AkInt64 in_expectedOldVal )
 	{
 		return _InterlockedCompareExchange64(io_pDest, in_newValue, in_expectedOldVal) == in_expectedOldVal;
 	}
 #endif
 
-	inline bool AkInterlockedCompareExchange( volatile AkInt32* io_pDest, AkInt32 in_newValue, AkInt32 in_expectedOldVal )
+	inline bool AkInterlockedCompareExchange(volatile AkAtomic32* io_pDest, AkInt32 in_newValue, AkInt32 in_expectedOldVal)
 	{
 		return InterlockedCompareExchange(io_pDest, in_newValue, in_expectedOldVal) == in_expectedOldVal;
 	}
 
 #if defined AK_CPU_X86 || defined AK_CPU_ARM
-	inline bool AkInterlockedCompareExchange( volatile AkIntPtr* io_pDest, AkIntPtr in_newValue, AkIntPtr in_expectedOldVal )
+	inline bool AkInterlockedCompareExchange(volatile AkAtomicPtr* io_pDest, AkIntPtr in_newValue, AkIntPtr in_expectedOldVal)
 	{
 		return InterlockedCompareExchange((volatile LONG_PTR*)io_pDest, (LONG_PTR)in_newValue, (LONG_PTR)in_expectedOldVal) == in_expectedOldVal;
 	}
@@ -229,16 +220,18 @@ namespace AKPLATFORM
 	{
 		out_threadProperties.nPriority = AK_THREAD_PRIORITY_NORMAL;
 		out_threadProperties.uStackSize= AK_DEFAULT_STACK_SIZE;
+#ifdef AK_WIN_UNIVERSAL_APP
+		out_threadProperties.processorNumber.Group = 0;
+		out_threadProperties.processorNumber.Number = MAXIMUM_PROCESSORS;
+		out_threadProperties.processorNumber.Reserved = 0;
+#else
 		out_threadProperties.dwAffinityMask = 0;
+#endif
 	}
 
 	/// Set the name of a thread: see http://msdn.microsoft.com/en-us/library/xcb2z8hs.aspx
 	inline void AkSetThreadName( DWORD in_dwThreadID, LPCSTR in_szThreadName )
 	{
-#if defined AK_USE_THREAD_EMULATION
-		UNREFERENCED_PARAMETER( in_dwThreadID );
-		UNREFERENCED_PARAMETER( in_szThreadName );
-#else
 		const DWORD MS_VC_EXCEPTION=0x406D1388;
 
 #pragma pack(push,8)
@@ -261,11 +254,10 @@ namespace AKPLATFORM
 		{
 			RaiseException( MS_VC_EXCEPTION, 0, sizeof(info)/sizeof(ULONG_PTR), (ULONG_PTR*)&info );
 		}
-#pragma warning(suppress: 6312)
+#pragma warning(suppress: 6312 6322)
 		__except(EXCEPTION_CONTINUE_EXECUTION)
 		{
 		}
-#endif
 	}
 
 	/// Platform Independent Helper
@@ -280,13 +272,6 @@ namespace AKPLATFORM
 		AKASSERT( (in_threadProperties.nPriority >= THREAD_PRIORITY_LOWEST && in_threadProperties.nPriority <= THREAD_PRIORITY_HIGHEST)
 			|| ( in_threadProperties.nPriority == THREAD_PRIORITY_TIME_CRITICAL ) );
 
-#ifdef AK_USE_THREAD_EMULATION
-		UNREFERENCED_PARAMETER( in_threadProperties );
-		UNREFERENCED_PARAMETER( in_szThreadName );
-       *out_pThread = AK::ThreadEmulation::CreateThread( pStartRoutine,                   // Thread start routine
-                                       pParams,                         // Thread function parameter
-                                       0 );								// Creation flags: create running
-#else
 		DWORD dwThreadID;
         *out_pThread = ::CreateThread( NULL,							// No security attributes
                                        in_threadProperties.uStackSize,	// StackSize (0 uses system default)
@@ -308,19 +293,27 @@ namespace AKPLATFORM
 		// Set properties.
 		if ( !::SetThreadPriority( *out_pThread, in_threadProperties.nPriority ) )
         {
-            AKASSERT( !"Failed setting IO thread priority" );
+            AKASSERT( !"Failed setting thread priority" );
 			AkCloseThread( out_pThread );
             return;
         }
-		if ( in_threadProperties.dwAffinityMask )
+#ifdef AK_WIN_UNIVERSAL_APP
+		if ( in_threadProperties.processorNumber.Number != MAXIMUM_PROCESSORS)
         {
-#ifndef AK_XBOXONE_ADK
-			if ( !::SetThreadAffinityMask( *out_pThread, in_threadProperties.dwAffinityMask ) )
+			if ( !SetThreadIdealProcessorEx( *out_pThread, const_cast<PPROCESSOR_NUMBER>(&in_threadProperties.processorNumber), NULL) )
             {
-                AKASSERT( !"Failed setting IO thread affinity mask" );
+                AKASSERT( !"Failed setting thread ideal processor" );
 				AkCloseThread( out_pThread );
             }
-#endif
+		}
+#else
+		if (in_threadProperties.dwAffinityMask)
+		{
+			if (!::SetThreadAffinityMask(*out_pThread, in_threadProperties.dwAffinityMask))
+			{
+				AKASSERT(!"Failed setting thread affinity mask");
+				AkCloseThread(out_pThread);
+			}
 		}
 #endif
 	}
@@ -330,7 +323,7 @@ namespace AKPLATFORM
     {
         AKASSERT( in_pThread );
         AKASSERT( *in_pThread );
-#ifdef AK_USE_METRO_API
+#ifdef AK_USE_UWP_API
         ::WaitForSingleObjectEx( *in_pThread, INFINITE, FALSE );
 #else
         ::WaitForSingleObject( *in_pThread, INFINITE );
@@ -346,11 +339,7 @@ namespace AKPLATFORM
 	/// Platform Independent Helper
     inline void AkSleep( AkUInt32 in_ulMilliseconds )
     {
-#ifdef AK_USE_THREAD_EMULATION
-		AK::ThreadEmulation::Sleep( in_ulMilliseconds );
-#else
 		::Sleep( in_ulMilliseconds );
-#endif
     }
 
 	// Optimized memory functions
@@ -474,7 +463,7 @@ namespace AKPLATFORM
 	#define AkAlloca( _size_ ) _alloca( _size_ )
 
 	/// Output a debug message on the console
-#if ! ( defined(AK_USE_METRO_API) || defined(AK_OPTIMIZED) )
+#if ! ( defined(AK_USE_UWP_API) || defined(AK_OPTIMIZED) )
 	inline void OutputDebugMsg( const wchar_t* in_pszMsg )
 	{
 		OutputDebugStringW( in_pszMsg );

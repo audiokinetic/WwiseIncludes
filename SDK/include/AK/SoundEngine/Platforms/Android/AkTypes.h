@@ -21,14 +21,9 @@ under the Apache License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES
 OR CONDITIONS OF ANY KIND, either express or implied. See the Apache License for
 the specific language governing permissions and limitations under the License.
 
-  Version: 2016.1  Build: 5775
-  Copyright (c) 2016 Audiokinetic Inc.
+  Version: v2017.1.0  Build: 6301
+  Copyright (c) 2006-2017 Audiokinetic Inc.
 *******************************************************************************/
-//////////////////////////////////////////////////////////////////////
-//
-// Copyright (c) 2011 Audiokinetic Inc. / All Rights Reserved
-//
-//////////////////////////////////////////////////////////////////////
 
 // AkTypes.h
 
@@ -46,19 +41,22 @@ the specific language governing permissions and limitations under the License.
 #ifdef __aarch64__
 #define AK_CPU_ARM_64	
 #else
-//#define AK_CPU_X86_64
+#define AK_CPU_X86_64
+#define AKSIMD_V4F32_SUPPORTED
 #endif
 #else
 #ifdef __arm__
 #define AK_CPU_ARM
 #else
-//#define AK_CPU_X86 //x86
+#define AK_CPU_X86 //x86
+#define AKSIMD_V4F32_SUPPORTED
 #endif
 #endif
 
 #if (defined AK_CPU_ARM || defined AK_CPU_ARM_64)
 #define AK_CPU_ARM_NEON
 #define AKSIMD_V4F32_SUPPORTED
+#define AK_ALIGN( __Declaration__, uAlignmentSize ) __Declaration__ __attribute__((aligned(uAlignmentSize))) ///< Definition for declaration that need to be aligned on arm architecture. uAlignmentSize is the aligment value
 #endif
 
 #include <AK/SoundEngine/Platforms/POSIX/AkTypes.h>

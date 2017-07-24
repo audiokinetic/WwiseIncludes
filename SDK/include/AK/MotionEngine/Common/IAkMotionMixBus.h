@@ -21,8 +21,8 @@ under the Apache License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES
 OR CONDITIONS OF ANY KIND, either express or implied. See the Apache License for
 the specific language governing permissions and limitations under the License.
 
-  Version: 2016.1  Build: 5775
-  Copyright (c) 2016 Audiokinetic Inc.
+  Version: v2017.1.0  Build: 6302
+  Copyright (c) 2006-2017 Audiokinetic Inc.
 *******************************************************************************/
 
 // IAkMotionMixBus.h
@@ -37,7 +37,7 @@ the specific language governing permissions and limitations under the License.
 class IAkMotionMixBus : public AK::IAkPlugin
 {
 public:
-	virtual AKRESULT 	Init(AK::IAkPluginMemAlloc * in_pAllocator, AkPlatformInitSettings * io_pPDSettings, AkUInt8 in_iPlayer, void * in_pDevice = NULL) = 0;
+	virtual AKRESULT 	Init(AK::IAkPluginMemAlloc * in_pAllocator, AK::IAkGlobalPluginContext * in_pContext, AkPlatformInitSettings * io_pPDSettings, AkUInt8 in_iPlayer, void * in_pDevice = NULL) = 0;
 
 	virtual AKRESULT	MixAudioBuffer( AkAudioBuffer &io_rBuffer ) = 0;
 	virtual AKRESULT	MixFeedbackBuffer( AkAudioBuffer &io_rBuffer, AkReal32 in_fVolume ) = 0;

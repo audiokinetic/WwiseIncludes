@@ -21,18 +21,9 @@ under the Apache License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES
 OR CONDITIONS OF ANY KIND, either express or implied. See the Apache License for
 the specific language governing permissions and limitations under the License.
 
-  Version: 2016.1  Build: 5775
-  Copyright (c) 2016 Audiokinetic Inc.
+  Version: v2017.1.0  Build: 6301
+  Copyright (c) 2006-2017 Audiokinetic Inc.
 *******************************************************************************/
-//////////////////////////////////////////////////////////////////////
-//
-// AkPlatformFuncs.h 
-//
-// Audiokinetic platform-dependent functions definition.
-//
-// Copyright (c) 2006 Audiokinetic Inc. / All Rights Reserved
-//
-//////////////////////////////////////////////////////////////////////
 
 #pragma once
 
@@ -76,23 +67,23 @@ namespace AKPLATFORM
     // ------------------------------------------------------------------
 
 	/// Platform Independent Helper
-	inline AkInt32 AkInterlockedIncrement( AkInt32 * pValue )
+	inline AkInt32 AkInterlockedIncrement( AkAtomic32 * pValue )
 	{
 		return __atomic_add_fetch(pValue,1, __ATOMIC_SEQ_CST);
 	}
 
 	/// Platform Independent Helper
-	inline AkInt32 AkInterlockedDecrement( AkInt32 * pValue )
+	inline AkInt32 AkInterlockedDecrement( AkAtomic32 * pValue )
 	{
 		return __atomic_sub_fetch(pValue,1, __ATOMIC_SEQ_CST);
 	}
 
-	inline bool AkInterlockedCompareExchange( volatile AkInt32* io_pDest, AkInt32 in_newValue, AkInt32 in_expectedOldVal )
+	inline bool AkInterlockedCompareExchange( volatile AkAtomic32* io_pDest, AkInt32 in_newValue, AkInt32 in_expectedOldVal )
 	{
 		return __atomic_compare_exchange(io_pDest, &in_expectedOldVal, &in_newValue, false, __ATOMIC_SEQ_CST, __ATOMIC_SEQ_CST);
 	}
 	
-	inline bool AkInterlockedCompareExchange( volatile AkInt64* io_pDest, AkInt64 in_newValue, AkInt64 in_expectedOldVal )
+	inline bool AkInterlockedCompareExchange( volatile AkAtomic64* io_pDest, AkInt64 in_newValue, AkInt64 in_expectedOldVal)
 	{
 		return __atomic_compare_exchange(io_pDest, &in_expectedOldVal, &in_newValue, false, __ATOMIC_SEQ_CST, __ATOMIC_SEQ_CST);
 	}

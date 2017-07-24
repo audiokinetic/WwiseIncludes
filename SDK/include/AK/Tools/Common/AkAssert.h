@@ -21,8 +21,8 @@ under the Apache License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES
 OR CONDITIONS OF ANY KIND, either express or implied. See the Apache License for
 the specific language governing permissions and limitations under the License.
 
-  Version: 2016.1  Build: 5775
-  Copyright (c) 2016 Audiokinetic Inc.
+  Version: v2017.1.0  Build: 6302
+  Copyright (c) 2006-2017 Audiokinetic Inc.
 *******************************************************************************/
 
 #ifndef _AK_AKASSERT_H_
@@ -34,61 +34,27 @@ the specific language governing permissions and limitations under the License.
 	#endif
 #endif
 
-#if ! defined( AKASSERT )
+#if !defined( AKASSERT )
 
 	#include <AK/SoundEngine/Common/AkTypes.h> //For AK_Fail/Success
 	#include <AK/SoundEngine/Common/AkSoundEngineExport.h>
 
 	#if defined( AK_ENABLE_ASSERTS )
 
-		#if defined( __SPU__ )
+		#ifndef AK_ASSERT_HOOK
+			AK_CALLBACK( void, AkAssertHook)( 
+									const char * in_pszExpression,	///< Expression
+									const char * in_pszFileName,	///< File Name
+									int in_lineNumber				///< Line Number
+									);
+			#define AK_ASSERT_HOOK
+		#endif
 
-			#if defined ( _DEBUG )
-				// Note: No assert hook on SPU
-				#include "spu_printf.h"
-				#include "libsn_spu.h"
-				#define AKASSERT(Condition)																\
-					if ( !(Condition) )																	\
-					{																					\
-						spu_printf( "Assertion triggered in file %s at line %d\n", __FILE__, __LINE__ );\
-						/*snPause();*/																	\
-					}																	
-			#else
-				#define AKASSERT(Condition)
-			#endif
+		extern AKSOUNDENGINE_API AkAssertHook g_pAssertHook;
 
-		#else // defined( __SPU__ )
+		// These platforms use a built-in g_pAssertHook (and do not fall back to the regular assert macro)
+		#define AKASSERT(Condition) ((Condition) ? ((void) 0) : g_pAssertHook( #Condition, __FILE__, __LINE__) )
 
-			#ifndef AK_ASSERT_HOOK
-				AK_CALLBACK( void, AkAssertHook)( 
-										const char * in_pszExpression,	///< Expression
-										const char * in_pszFileName,	///< File Name
-										int in_lineNumber				///< Line Number
-										);
-				#define AK_ASSERT_HOOK
-			#endif
-
-			extern AKSOUNDENGINE_API AkAssertHook g_pAssertHook;
-
-			// These platforms use a built-in g_pAssertHook (and do not fall back to the regular assert macro)
-			#if defined( AK_APPLE ) || defined( AK_ANDROID ) || defined( AK_WII_FAMILY )
-
-				#define AKASSERT(Condition) ((Condition) ? ((void) 0) : g_pAssertHook( #Condition, __FILE__, __LINE__) )
-
-			#else
-				
-				#include <assert.h>
-
-				#define _AkAssertHook(_Expression) (void)( (_Expression) || (g_pAssertHook( #_Expression, __FILE__, __LINE__), 0) )
-
-				#define AKASSERT(Condition) if ( g_pAssertHook )          \
-												_AkAssertHook(Condition); \
-											else                          \
-												assert(Condition)
-
-			#endif // defined( AK_WII )
-
-		#endif // defined( __SPU__ )
 
 		#define AKVERIFY AKASSERT
 
@@ -136,9 +102,36 @@ the specific language governing permissions and limitations under the License.
 #endif // ! defined( AKASSERT )
 
 #ifdef AK_ENABLE_ASSERTS
-#define DEFINEDUMMYASSERTHOOK AkAssertHook g_pAssertHook = NULL;
+
+
+//Do nothing. This is a dummy function, so that g_pAssertHook is never NULL.
+#define DEFINEDUMMYASSERTHOOK void AkAssertHookFunc( \
+const char* in_pszExpression,\
+const char* in_pszFileName,\
+int in_lineNumber)\
+{\
+\
+}\
+AkAssertHook g_pAssertHook = AkAssertHookFunc;
 #else
 #define DEFINEDUMMYASSERTHOOK
+
 #endif
-#endif //_AK_AKASSERT_H_
+
+// Compile-time assert.  Usage:
+// AkStaticAssert<[your boolean expression here]>::Assert();
+// Example: 
+// AkStaticAssert<sizeof(MyStruct) == 20>::Assert();	//If you hit this, you changed the size of MyStruct!
+// Empty default template
+template <bool b>
+struct AkStaticAssert {};
+
+// Template specialized on true
+template <>
+struct AkStaticAssert<true>
+{
+	static void Assert() {}
+};
+
+#endif
 

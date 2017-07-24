@@ -21,8 +21,8 @@ under the Apache License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES
 OR CONDITIONS OF ANY KIND, either express or implied. See the Apache License for
 the specific language governing permissions and limitations under the License.
 
-  Version: 2016.1  Build: 5775
-  Copyright (c) 2016 Audiokinetic Inc.
+  Version: v2017.1.0  Build: 6302
+  Copyright (c) 2006-2017 Audiokinetic Inc.
 *******************************************************************************/
 
 // AkVorbisFactory.h
@@ -30,6 +30,4 @@ the specific language governing permissions and limitations under the License.
 /// \file
 /// Codec plug-in unique ID and creation functions (hooks) necessary to register the Vorbis codec in the sound engine.
 
-#if !defined AK_3DS
 AK_STATIC_LINK_PLUGIN(AkVorbisDecoder);
-#endif

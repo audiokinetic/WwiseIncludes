@@ -21,9 +21,10 @@ under the Apache License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES
 OR CONDITIONS OF ANY KIND, either express or implied. See the Apache License for
 the specific language governing permissions and limitations under the License.
 
-  Version: 2016.1  Build: 5775
-  Copyright (c) 2016 Audiokinetic Inc.
+  Version: v2017.1.0  Build: 6302
+  Copyright (c) 2006-2017 Audiokinetic Inc.
 *******************************************************************************/
+
 #pragma once
 /// \file
 /// Registers the Wwise Stereo Delay plugin automatically.
@@ -33,6 +34,6 @@ the specific language governing permissions and limitations under the License.
 /// <br><b>Library file:</b> AkStereoDelayFX.lib
 
 
-#if !defined AK_3DS && !defined AK_VITA_HW
+#if !defined AK_VITA_HW
 AK_STATIC_LINK_PLUGIN(AkStereoDelayFX)
 #endif

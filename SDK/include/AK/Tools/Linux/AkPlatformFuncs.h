@@ -21,18 +21,9 @@ under the Apache License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES
 OR CONDITIONS OF ANY KIND, either express or implied. See the Apache License for
 the specific language governing permissions and limitations under the License.
 
-  Version: 2016.1  Build: 5775
-  Copyright (c) 2016 Audiokinetic Inc.
+  Version: v2017.1.0  Build: 6301
+  Copyright (c) 2006-2017 Audiokinetic Inc.
 *******************************************************************************/
-//////////////////////////////////////////////////////////////////////
-//
-// AkPlatformFuncs.h 
-//
-// Audiokinetic platform-dependent functions definition.
-//
-// Copyright (c) 2006 Audiokinetic Inc. / All Rights Reserved
-//
-//////////////////////////////////////////////////////////////////////
 
 #pragma once
 
@@ -50,23 +41,23 @@ namespace AKPLATFORM
     // ------------------------------------------------------------------
 
 	/// Platform Independent Helper
-	inline AkInt32 AkInterlockedIncrement( AkInt32 * pValue )
+	inline AkInt32 AkInterlockedIncrement(AkAtomic32 * pValue)
 	{
 		return __sync_add_and_fetch(pValue,1);
 	}
 
 	/// Platform Independent Helper
-	inline AkInt32 AkInterlockedDecrement( AkInt32 * pValue )
+	inline AkInt32 AkInterlockedDecrement(AkAtomic32 * pValue)
 	{
 		return __sync_sub_and_fetch(pValue,1);
 	}
 
-	AkForceInline bool AkInterlockedCompareExchange( volatile AkInt32* io_pDest, AkInt32 in_newValue, AkInt32 in_expectedOldVal )
+	AkForceInline bool AkInterlockedCompareExchange(volatile AkAtomic32* io_pDest, AkInt32 in_newValue, AkInt32 in_expectedOldVal)
 	{
 		return __sync_bool_compare_and_swap(io_pDest, in_expectedOldVal, in_newValue);
 	}
 
-	AkForceInline bool AkInterlockedCompareExchange( volatile AkInt64* io_pDest, AkInt64 in_newValue, AkInt64 in_expectedOldVal )
+	AkForceInline bool AkInterlockedCompareExchange(volatile AkAtomic64* io_pDest, AkInt64 in_newValue, AkInt64 in_expectedOldVal)
 	{
 		return __sync_bool_compare_and_swap(io_pDest, in_expectedOldVal, in_newValue);
 	}
@@ -82,7 +73,9 @@ namespace AKPLATFORM
 	/// Platform Independent Helper
     inline void PerformanceCounter( AkInt64 * out_piLastTime )
 	{
-		*out_piLastTime = clock();
+		struct timespec clockNow;
+		clock_gettime(CLOCK_MONOTONIC, &clockNow);
+		*out_piLastTime = ((clockNow.tv_sec + clockNow.tv_nsec/ 1000000000.0) * CLOCKS_PER_SEC);
 	}
 
 	/// Platform Independent Helper

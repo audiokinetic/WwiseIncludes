@@ -21,14 +21,9 @@ under the Apache License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES
 OR CONDITIONS OF ANY KIND, either express or implied. See the Apache License for
 the specific language governing permissions and limitations under the License.
 
-  Version: 2016.1  Build: 5775
-  Copyright (c) 2016 Audiokinetic Inc.
+  Version: v2017.1.0  Build: 6302
+  Copyright (c) 2006-2017 Audiokinetic Inc.
 *******************************************************************************/
-//////////////////////////////////////////////////////////////////////
-//
-// Copyright (c) 2015 Audiokinetic Inc. / All Rights Reserved
-//
-//////////////////////////////////////////////////////////////////////
 
 #ifndef _AKBLOCKPOOL_H
 #define _AKBLOCKPOOL_H
@@ -42,8 +37,8 @@ the specific language governing permissions and limitations under the License.
 //					- Fragmentation in the pool will prevent it from shrinking, but in many use cases this is acceptable.
 //
 
-#ifndef AK_OPTIMIZED
-#define AK_DYNA_BLK_STATS
+#ifdef _DEBUG
+//#define AK_DYNA_BLK_STATS
 #define AK_DYNA_BLK_SCRUB_MEM
 #endif
 
@@ -70,7 +65,7 @@ the specific language governing permissions and limitations under the License.
 #endif
 
 template  < typename T, AkUInt32 uPoolChunkSize, class TAlloc = ArrayPoolDefault>
-class AkDynaBlkPool
+class AkDynaBlkPool: public TAlloc
 {
 	enum { kChunkMemoryBytes = sizeof(T)*uPoolChunkSize };
 
@@ -108,8 +103,39 @@ public:
 	T* New()
 	{
 		T* ptr = Alloc();
-		if (ptr)
-			AkPlacementNew(ptr) T;
+		if (ptr) AkPlacementNew(ptr) T;
+		return ptr;
+	}
+
+	template<typename A1>
+	T* New(A1 a1)
+	{
+		T* ptr = Alloc();
+		if (ptr) AkPlacementNew(ptr) T(a1);
+		return ptr;
+	}
+
+	template<typename A1, typename A2>
+	T* New(A1 a1, A2 a2)
+	{
+		T* ptr = Alloc();
+		if (ptr) AkPlacementNew(ptr) T(a1, a2);
+		return ptr;
+	}
+
+	template<typename A1, typename A2, typename A3>
+	T* New(A1 a1, A2 a2, A3 a3)
+	{
+		T* ptr = Alloc();
+		if (ptr) AkPlacementNew(ptr) T(a1, a2, a3);
+		return ptr;
+	}
+
+	template<typename A1, typename A2, typename A3, typename A4>
+	T* New(A1 a1, A2 a2, A3 a3, A4 a4)
+	{
+		T* ptr = Alloc();
+		if (ptr) AkPlacementNew(ptr) T(a1,a2,a3,a4);
 		return ptr;
 	}
 
@@ -119,6 +145,7 @@ public:
 		Free(ptr);
 	}
 
+private:
 	T* Alloc()
 	{
 		FreeBlock* pItem = NULL;
@@ -176,7 +203,6 @@ public:
 		}
 	}
 
-private:
 	tChunkList m_chunkList;
 
 #ifdef AK_DYNA_BLK_STATS

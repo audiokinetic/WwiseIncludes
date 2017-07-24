@@ -21,8 +21,8 @@ under the Apache License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES
 OR CONDITIONS OF ANY KIND, either express or implied. See the Apache License for
 the specific language governing permissions and limitations under the License.
 
-  Version: 2016.1  Build: 5775
-  Copyright (c) 2016 Audiokinetic Inc.
+  Version: v2017.1.0  Build: 6302
+  Copyright (c) 2006-2017 Audiokinetic Inc.
 *******************************************************************************/
 
 // Length of delay line is mapped on 4 frames boundary (i.e. may not be suited for reverberation for example)
@@ -30,10 +30,6 @@ the specific language governing permissions and limitations under the License.
 // This is not a delay line implementation, but rather just some services for memory managment related 
 // to specific delay line execution needs as detailed by clients
 #include <AK/AkPlatforms.h>
-#ifdef AK_PS3
-#include "PS3/AkDelayLineMemoryStream.h"
-#else
-//Default implementation
 
 #ifndef _AKDSP_DELAYLINEMEMORYSTREAM_
 #define _AKDSP_DELAYLINEMEMORYSTREAM_
@@ -70,4 +66,3 @@ namespace AK
 	} // namespace DSP
 } // namespace AK
 #endif // _AKDSP_DELAYLINEMEMORYSTREAM_
-#endif //AK_PS3

@@ -21,8 +21,8 @@ under the Apache License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES
 OR CONDITIONS OF ANY KIND, either express or implied. See the Apache License for
 the specific language governing permissions and limitations under the License.
 
-  Version: 2016.1  Build: 5775
-  Copyright (c) 2016 Audiokinetic Inc.
+  Version: v2017.1.0  Build: 6302
+  Copyright (c) 2006-2017 Audiokinetic Inc.
 *******************************************************************************/
 
 #ifndef _AK_ALLPLUGINSFACTORIES_H_
@@ -52,11 +52,9 @@ the specific language governing permissions and limitations under the License.
 #include <AK/Plugin/AkTremoloFXFactory.h>						// Tremolo
 #include <AK/Plugin/AkHarmonizerFXFactory.h>					// Harmonizer
 #include <AK/Plugin/AkRecorderFXFactory.h>						// Recorder
+#include <AK/Plugin/AkReflectFXFactory.h>						// Reflect
 
 // Platform specific
-#ifdef AK_3DS
-#include <AK/Plugin/3DSPluginsFXFactory.h>						// All 3DS plug-ins
-#endif
 #ifdef AK_VITA
 #include <AK/Plugin/AkVitaPluginFXFactory.h>						// All Vita plug-ins
 #endif
@@ -95,18 +93,15 @@ the specific language governing permissions and limitations under the License.
 
 // Required by codecs plug-ins
 #include <AK/Plugin/AkVorbisDecoderFactory.h>
-#ifdef AK_XBOX360
-#include <AK/Plugin/AkXWMADecoderFactory.h>		// Note: Useable only on Xbox 360. Ok to include it on other platforms as long as it is not referenced.
-#endif
 #ifdef AK_APPLE
 #include <AK/Plugin/AkAACFactory.h>			// Note: Useable only on Apple devices. Ok to include it on other platforms as long as it is not referenced.
 #endif
 #ifdef AK_VITA
 #include <AK/Plugin/AkATRAC9Factory.h>		// Note: Useable only on Vita. Ok to include it on other platforms as long as it is not referenced.
 #endif
-
-// Mixer plugins
-#include <AK/Plugin/IOSONOProximityMixerFactory.h>					// IOSONO Proximity
+#ifdef AK_NX
+#include <AK/Plugin/AkOpusFactory.h>		// Note: Useable only on NX. Ok to include it on other platforms as long as it is not referenced.
+#endif
 
 // Rumble support
 #if defined AK_MOTION

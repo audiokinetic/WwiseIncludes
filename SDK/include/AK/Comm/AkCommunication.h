@@ -21,8 +21,8 @@ under the Apache License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES
 OR CONDITIONS OF ANY KIND, either express or implied. See the Apache License for
 the specific language governing permissions and limitations under the License.
 
-  Version: 2016.1  Build: 5775
-  Copyright (c) 2016 Audiokinetic Inc.
+  Version: v2017.1.0  Build: 6302
+  Copyright (c) 2006-2017 Audiokinetic Inc.
 *******************************************************************************/
 
 /// \file 
@@ -52,7 +52,7 @@ struct AkCommSettings
 		szAppNetworkName[0] = 0;
 	}
 	AkUInt32	uPoolSize;		///< Size of the communication pool, in bytes. 
-#ifdef AK_3DS
+#if defined(AK_USE_NX_HTCS)
 	AkThreadProperties threadProperties; ///< Communication & Connection threading properties (its default priority is AK_THREAD_PRIORITY_ABOVENORMAL)
 #endif
 
@@ -104,14 +104,14 @@ struct AkCommSettings
 	/// - AK::Comm::Init()
 	Ports ports;	
 
-	///< Tells if the base console communication library should be initialized.  
-	///< If set to false, the game should load/initialize the console's communication library prior to calling this function.
-	///< Set to false only if your game already use sockets before the sound engine initialization.
-	///< Some consoles have critical requirements for initialization, see \ref initialization_comm_console_lib
+	/// Tells if the base console communication library should be initialized.  
+	/// If set to false, the game should load/initialize the console's communication library prior to calling this function.
+	/// Set to false only if your game already use sockets before the sound engine initialization.
+	/// Some consoles have critical requirements for initialization, see \ref initialization_comm_console_lib
 	bool bInitSystemLib;
 
-	///< Optional name that will be displayed over network remote connection of Wwise.
-	///< It must be a NULL terminated string.
+	/// Optional name that will be displayed over network remote connection of Wwise.
+	/// It must be a NULL terminated string.
 	char szAppNetworkName[AK_COMM_SETTINGS_MAX_STRING_SIZE];
 };
 

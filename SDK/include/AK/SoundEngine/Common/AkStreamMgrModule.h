@@ -21,8 +21,8 @@ under the Apache License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES
 OR CONDITIONS OF ANY KIND, either express or implied. See the Apache License for
 the specific language governing permissions and limitations under the License.
 
-  Version: 2016.1  Build: 5775
-  Copyright (c) 2016 Audiokinetic Inc.
+  Version: v2017.1.0  Build: 6302
+  Copyright (c) 2006-2017 Audiokinetic Inc.
 *******************************************************************************/
 
 /// \file 
@@ -361,8 +361,7 @@ namespace AK
 			/// you don't do anything special in Cancel(), leave it to true. This will reduce the amount of useless calls.
 			/// If you set it to false, Cancel() will be called again for each remaining pending transfer that need to be cancelled. 
 			/// - If io_bCancelAllTransfersForThisFile is not set, Cancel() is only called for a subset of pending 
-			///	transfers for this file. The return value is ignored; Cancel() will be called for each transfer that should
-			///	be cancelled.
+			///	transfers for this file. You must not set it to true, as Cancel() needs to be called explicitly for each transfer that should be cancelled.
 			/// \warning
 			/// - The calling thread holds the stream's lock. You may call the callback function directly from here
 			/// (if you can guarantee that the I/O buffer will not be accessed in the meantime), but you must not wait here 
@@ -374,6 +373,9 @@ namespace AK
 			/// the transfer was found and dequeued. On the other hand, if you choose not to do anything in Cancel(), the lock only protects 
 			/// your list between Read()/Write() and your worker thread's routine, and since the device I/O thread does not hold the 
 			/// stream's lock while calling Read()/Write(), your worker thread may therefore hold it while calling back transfers.
+			/// - A race condition exists when cancelling all transfers (io_bCancelAllTransfersForThisFile is true) directly from within this hook. 
+			/// If you handle the io_bCancelAllTransfersForThisFile == true case, you need to defer calling the completion callback to later 
+			/// (from your usual I/O completion thread, for example). This will be fixed in a future version of Wwise.
 			virtual void Cancel(
 				AkFileDesc &		in_fileDesc,			///< File descriptor.
 				AkAsyncIOTransferInfo & io_transferInfo,	///< Transfer info to cancel.

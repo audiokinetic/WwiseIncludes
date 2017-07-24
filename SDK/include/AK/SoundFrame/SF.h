@@ -21,8 +21,8 @@ under the Apache License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES
 OR CONDITIONS OF ANY KIND, either express or implied. See the Apache License for
 the specific language governing permissions and limitations under the License.
 
-  Version: 2016.1  Build: 5775
-  Copyright (c) 2016 Audiokinetic Inc.
+  Version: v2017.1.0  Build: 6302
+  Copyright (c) 2006-2017 Audiokinetic Inc.
 *******************************************************************************/
 
 /// \file 
@@ -395,10 +395,11 @@ namespace AK
 			/// This function is thread-safe. 
 			/// \return	True if the operation was successful, False otherwise
 			/// \sa
-			/// - AK::SoundEngine::SetActiveListeners()
-			virtual bool SetActiveListeners( 
-				AkGameObjectID in_gameObjectID,	///< Game object ID
-				AkUInt32 in_uiListenerMask		///< Bitmask representing the active listeners (LSB = Listener 0, set to 1 means active)
+			/// - AK::SoundEngine::SetListeners()
+			virtual bool SetListeners( 
+				AkGameObjectID in_emitterGameObj,			///< Emitter game object.
+				const AkGameObjectID* in_pListenerGameObjs,	///< Array of listener game object IDs that will be activated for in_GameObj.  Game objects must have been previously registered.
+				AkUInt32 in_uNumListeners
 				) = 0;
 
 			/// Set the scaling factor of a game object.
@@ -493,8 +494,9 @@ namespace AK
 			/// - AK::SoundEngine::SetGameObjectOutputBusVolume()
 			virtual bool SetGameObjectOutputBusVolume( 
 				AkGameObjectID in_gameObjectID,			///< Associated game object ID
-				AkReal32 in_fControlValue				///< Dry level control value, ranging from 0.0f to 1.0f
-														///< (0.0f means 0% dry, while 1.0f means 100% dry)
+				AkGameObjectID in_listenerID,			///< Listener ID
+				AkReal32 in_fControlValue				///< A multiplier where 0 means silence and 1 means no change. 
+														///< (Therefore, values between 0 and 1 will attenuate the sound, and values greater than 1 will amplify it.)
 				) = 0;
 
 			/// Set a game object's obstruction and occlusion levels.\n

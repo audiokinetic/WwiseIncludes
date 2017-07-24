@@ -21,18 +21,9 @@ under the Apache License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES
 OR CONDITIONS OF ANY KIND, either express or implied. See the Apache License for
 the specific language governing permissions and limitations under the License.
 
-  Version: 2016.1  Build: 5775
-  Copyright (c) 2016 Audiokinetic Inc.
+  Version: v2017.1.0  Build: 6302
+  Copyright (c) 2006-2017 Audiokinetic Inc.
 *******************************************************************************/
-//////////////////////////////////////////////////////////////////////
-//
-// AkPlatformFuncs.h 
-//
-// Audiokinetic platform-dependent functions definition.
-//
-// Copyright (c) 2011 Audiokinetic Inc. / All Rights Reserved
-//
-//////////////////////////////////////////////////////////////////////
 
 #pragma once
 
@@ -70,11 +61,6 @@ namespace AK
     extern AkReal32 g_fFreqRatio;
 }
 
-#ifdef AK_NACL
-#define sched_get_priority_max( _a ) 0
-#define sched_get_priority_min( _a ) 0
-#endif
-
 //-----------------------------------------------------------------------------
 // Defines for POSIX (Mac, iOS, Android)
 //-----------------------------------------------------------------------------
@@ -85,13 +71,8 @@ namespace AK
 #define AK_RETURN_THREAD_OK                     0x00000000
 #define AK_RETURN_THREAD_ERROR                  0x00000001
 
-// WG-21467
-// For GameSim to play AAC soundbanks on Mac, stacksize has to be bigger to avoid crashing.
-#ifdef AK_APPLE
-	#define AK_DEFAULT_STACK_SIZE                   (32768*2)
-#else
-	#define AK_DEFAULT_STACK_SIZE                   (32768)
-#endif
+#define AK_DEFAULT_STACK_SIZE                   (65536)
+
 
 #define AK_THREAD_DEFAULT_SCHED_POLICY			SCHED_FIFO
 
@@ -215,7 +196,6 @@ namespace AKPLATFORM
 		
 		AKVERIFY(!pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_JOINABLE));
 		
-#ifndef AK_NACL		
 		// Try to set the thread policy
 		int sched_policy = in_threadProperties.uSchedPolicy;
 		if( pthread_attr_setschedpolicy( &attr, sched_policy )  )
@@ -239,7 +219,6 @@ namespace AKPLATFORM
 			schedParam.sched_priority = in_threadProperties.nPriority;
 			AKVERIFY( !pthread_attr_setschedparam( &attr, &schedParam ));
 		}
-#endif
 #ifdef AK_APPLE
 		int inherit;
 		pthread_attr_getinheritsched(&attr, &inherit );

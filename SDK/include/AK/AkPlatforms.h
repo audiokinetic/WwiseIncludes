@@ -21,8 +21,8 @@ under the Apache License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES
 OR CONDITIONS OF ANY KIND, either express or implied. See the Apache License for
 the specific language governing permissions and limitations under the License.
 
-  Version: 2016.1  Build: 5775
-  Copyright (c) 2016 Audiokinetic Inc.
+  Version: v2017.1.0  Build: 6302
+  Copyright (c) 2006-2017 Audiokinetic Inc.
 *******************************************************************************/
 
 /// \file 
@@ -32,13 +32,9 @@ the specific language governing permissions and limitations under the License.
 
 #pragma once
 
-#if defined( NN_PLATFORM_CTR )
+#if defined( NN_NINTENDO_SDK )
 
-	#include <AK/SoundEngine/Platforms/3DS/AkTypes.h>
-
-#elif _XBOX_VER >= 200 // Check Xbox before WIN32 because WIN32 might also be defined in some cases in Xbox 360 projects
- 
-	#include <AK/SoundEngine/Platforms/XBox360/AkTypes.h>
+	#include <AK/SoundEngine/Platforms/NX/AkTypes.h>
 
 #elif defined( _XBOX_ONE )
 
@@ -52,14 +48,6 @@ the specific language governing permissions and limitations under the License.
 
 	#include <AK/SoundEngine/Platforms/Mac/AkTypes.h>
 
-#elif defined (__PPU__) || defined (__SPU__)
-
-	#include <AK/SoundEngine/Platforms/PS3/AkTypes.h>
-
-#elif defined( CAFE ) || defined( RVL_OS )
-
-	#include <AK/SoundEngine/Platforms/WiiFamily/AkTypes.h>
-
 #elif defined( __SCE__ ) && defined( __arm__ )
 
 	#include <AK/SoundEngine/Platforms/Vita/AkTypes.h>
@@ -71,10 +59,6 @@ the specific language governing permissions and limitations under the License.
 #elif defined( __ANDROID__ )
 
 	#include <AK/SoundEngine/Platforms/Android/AkTypes.h>
-
-#elif defined( __native_client__ )
-
-	#include <AK/SoundEngine/Platforms/nacl/AkTypes.h>
 
 #elif defined( __linux__ )
 

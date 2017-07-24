@@ -21,8 +21,8 @@ under the Apache License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES
 OR CONDITIONS OF ANY KIND, either express or implied. See the Apache License for
 the specific language governing permissions and limitations under the License.
 
-  Version: 2016.1  Build: 5775
-  Copyright (c) 2016 Audiokinetic Inc.
+  Version: v2017.1.0  Build: 6302
+  Copyright (c) 2006-2017 Audiokinetic Inc.
 *******************************************************************************/
 
 #ifndef _AK_SOUNDENGINE_AKDYNAMICSEQUENCE_H
@@ -186,6 +186,21 @@ namespace AK
 			/// Break specified Dynamic Sequence.  The sequence will stop after the current item.
 			AK_EXTERNAPIFUNC( AKRESULT, Break )(
 				AkPlayingID in_playingID						///< AkPlayingID returned by DynamicSequence::Open
+				);
+
+			/// Get pause times.
+			AK_EXTERNAPIFUNC(AKRESULT, GetPauseTimes)(
+				AkPlayingID in_playingID,						///< AkPlayingID returned by DynamicSequence::Open
+				AkUInt32 &out_uTime,							///< If sequence is currently paused, returns time when pause started, else 0.
+				AkUInt32 &out_uDuration							///< Returns total pause duration since last call to GetPauseTimes, excluding the time elapsed in the current pause.
+				);
+
+			/// Get currently playing item. Note that this may be different from the currently heard item
+			/// when sequence is in sample-accurate mode.
+			AK_EXTERNAPIFUNC(AKRESULT, GetPlayingItem)(
+				AkPlayingID in_playingID,						///< AkPlayingID returned by DynamicSequence::Open
+				AkUniqueID & out_audioNodeID, 					///< Returned audio node ID of playing item.
+				void *& out_pCustomInfo							///< Returned user data of playing item.
 				);
 
 			/// Lock the Playlist for editing. Needs a corresponding UnlockPlaylist call.

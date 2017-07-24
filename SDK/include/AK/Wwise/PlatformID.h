@@ -21,8 +21,8 @@ under the Apache License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES
 OR CONDITIONS OF ANY KIND, either express or implied. See the Apache License for
 the specific language governing permissions and limitations under the License.
 
-  Version: 2016.1  Build: 5775
-  Copyright (c) 2016 Audiokinetic Inc.
+  Version: v2017.1.0  Build: 6302
+  Copyright (c) 2006-2017 Audiokinetic Inc.
 *******************************************************************************/
 
 /// \file
@@ -114,10 +114,6 @@ namespace PlatformID
 	AK_ID_DECLARE GUID iOS_unsafeguid = { 0xece03db4, 0xf948, 0x462d, { 0xb2, 0xbb, 0xa9, 0x17, 0x30, 0x12, 0xb1, 0xf8 } };
 	AK_ID_DECLARE BasePlatformID iOS = BasePlatformID::Create( iOS_unsafeguid );
 
-	// {3B6B2F86-291B-4b95-90FD-6AD751FF6DCA}
-	AK_ID_DECLARE GUID Nintendo3DS_unsafeguid = { 0x3b6b2f86, 0x291b, 0x4b95, { 0x90, 0xfd, 0x6a, 0xd7, 0x51, 0xff, 0x6d, 0xca } };
-	AK_ID_DECLARE BasePlatformID Nintendo3DS = BasePlatformID::Create( Nintendo3DS_unsafeguid );
-
 	// {7CB75869-58AD-4458-948A-1935CCB4AC66}
 	AK_ID_DECLARE GUID WiiUSW_unsafeguid = { 0x7cb75869, 0x58ad, 0x4458, { 0x94, 0x8a, 0x19, 0x35, 0xcc, 0xb4, 0xac, 0x66 } };
 	AK_ID_DECLARE BasePlatformID WiiUSW = BasePlatformID::Create( WiiUSW_unsafeguid );
@@ -138,9 +134,9 @@ namespace PlatformID
 	AK_ID_DECLARE GUID Linux_unsafeguid = { 0xbd0bdf13, 0x3125, 0x454f, { 0x8b, 0xfd, 0x31, 0x95, 0x37, 0x16, 0x9f, 0x81 } };
 	AK_ID_DECLARE BasePlatformID Linux = BasePlatformID::Create( Linux_unsafeguid );
 
-	// {869AD233-43F2-4c0f-9126-79F44C15E1D9}
-	AK_ID_DECLARE GUID WindowsPhone_unsafeguid = { 0x869ad233, 0x43f2, 0x4c0f, { 0x91, 0x26, 0x79, 0xf4, 0x4c, 0x15, 0xe1, 0xd9 } };
-	AK_ID_DECLARE BasePlatformID WindowsPhone = BasePlatformID::Create( WindowsPhone_unsafeguid );
+	// {874F26D2-416D-4698-BFB6-3427CAFCFF9C}
+	AK_ID_DECLARE GUID NintendoNX_unsafeguid = { 0x874f26d2, 0x416d, 0x4698, { 0xbf, 0xb6, 0x34, 0x27, 0xca, 0xfc, 0xff, 0x9c } };
+	AK_ID_DECLARE BasePlatformID NintendoNX = BasePlatformID::Create(NintendoNX_unsafeguid);
 
 	// {639AD233-23F2-4c0f-9127-79F44C15E1DA}
 	AK_ID_DECLARE GUID Emscripten_unsafeguid = { 0x639ad233, 0x23f2, 0x4c0f, { 0x91, 0x27, 0x79, 0xf4, 0x4c, 0x15, 0xe1, 0xdA } };

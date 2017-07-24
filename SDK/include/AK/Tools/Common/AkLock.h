@@ -21,8 +21,8 @@ under the Apache License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES
 OR CONDITIONS OF ANY KIND, either express or implied. See the Apache License for
 the specific language governing permissions and limitations under the License.
 
-  Version: 2016.1  Build: 5775
-  Copyright (c) 2016 Audiokinetic Inc.
+  Version: v2017.1.0  Build: 6302
+  Copyright (c) 2006-2017 Audiokinetic Inc.
 *******************************************************************************/
 
 // AkLock.h
@@ -38,28 +38,13 @@ the specific language governing permissions and limitations under the License.
 #if defined(AK_WIN) || defined(AK_XBOXONE)
 #include <AK/Tools/Win32/AkLock.h>
 
-#elif defined (AK_XBOX360)
-#include <AK/Tools/XBox360/AkLock.h>
-
-#elif defined (AK_PS3)
-#include <AK/Tools/PS3/AkLock.h>
-
-#elif defined (AK_WII_FAMILY)
-#include <AK/Tools/Wii/AkLock.h>
-
 #elif defined (AK_APPLE) 
 #include <AK/Tools/POSIX/AkLock.h>
 
 #elif defined (AK_VITA)
 #include <AK/Tools/Vita/AkLock.h>
 
-#elif defined (AK_3DS)
-#include <AK/Tools/3DS/AkLock.h>
-
 #elif defined (AK_ANDROID)
-#include <AK/Tools/POSIX/AkLock.h>
-
-#elif defined (AK_NACL)
 #include <AK/Tools/POSIX/AkLock.h>
 
 #elif defined (AK_PS4)
@@ -73,6 +58,9 @@ the specific language governing permissions and limitations under the License.
 
 #elif defined (AK_QNX)
 #include <AK/Tools/POSIX/AkLock.h>
+
+#elif defined (AK_NX)
+#include <AK/Tools/NX/AkLock.h>
 
 #else
 #error AkLock.h: Undefined platform

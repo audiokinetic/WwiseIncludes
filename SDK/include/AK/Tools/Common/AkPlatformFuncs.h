@@ -21,8 +21,8 @@ under the Apache License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES
 OR CONDITIONS OF ANY KIND, either express or implied. See the Apache License for
 the specific language governing permissions and limitations under the License.
 
-  Version: 2016.1  Build: 5775
-  Copyright (c) 2016 Audiokinetic Inc.
+  Version: v2017.1.0  Build: 6302
+  Copyright (c) 2006-2017 Audiokinetic Inc.
 *******************************************************************************/
 
 // AkPlatformFuncs.h
@@ -41,18 +41,6 @@ the specific language governing permissions and limitations under the License.
 #if defined(AK_WIN) || defined(AK_XBOXONE)
 #include <AK/Tools/Win32/AkPlatformFuncs.h>
 
-#elif defined (AK_XBOX360)
-#include <AK/Tools/XBox360/AkPlatformFuncs.h>
-
-#elif defined (AK_PS3)
-#include <AK/Tools/PS3/AkPlatformFuncs.h>
-
-#elif defined (AK_WII)
-#include <AK/Tools/Wii/AkPlatformFuncs.h>
-
-#elif defined (AK_WIIU)
-#include <AK/Tools/WiiU/AkPlatformFuncs.h>
-
 #elif defined (AK_APPLE)
 #include <AK/Tools/Mac/AkPlatformFuncs.h>
 #include <AK/Tools/POSIX/AkPlatformFuncs.h>
@@ -60,15 +48,8 @@ the specific language governing permissions and limitations under the License.
 #elif defined (AK_VITA)
 #include <AK/Tools/Vita/AkPlatformFuncs.h>
 
-#elif defined (AK_3DS)
-#include <AK/Tools/3DS/AkPlatformFuncs.h>
-
 #elif defined (AK_ANDROID)
 #include <AK/Tools/Android/AkPlatformFuncs.h>
-
-#elif defined (AK_NACL)
-#include <AK/Tools/nacl/AkPlatformFuncs.h>
-#include <AK/Tools/POSIX/AkPlatformFuncs.h>
 
 #elif defined (AK_PS4)
 #include <AK/Tools/PS4/AkPlatformFuncs.h>
@@ -83,6 +64,9 @@ the specific language governing permissions and limitations under the License.
 #elif defined (AK_QNX)
 #include <AK/Tools/QNX/AkPlatformFuncs.h>
 #include <AK/Tools/POSIX/AkPlatformFuncs.h>
+
+#elif defined (AK_NX)
+#include <AK/Tools/NX/AkPlatformFuncs.h>
 
 #else
 #error AkPlatformFuncs.h: Undefined platform

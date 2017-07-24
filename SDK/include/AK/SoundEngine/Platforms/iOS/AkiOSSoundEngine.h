@@ -21,8 +21,8 @@ under the Apache License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES
 OR CONDITIONS OF ANY KIND, either express or implied. See the Apache License for
 the specific language governing permissions and limitations under the License.
 
-  Version: 2016.1  Build: 5775
-  Copyright (c) 2016 Audiokinetic Inc.
+  Version: v2017.1.0  Build: 6301
+  Copyright (c) 2006-2017 Audiokinetic Inc.
 *******************************************************************************/
 
 // AkiOSSoundEngine.h
@@ -117,7 +117,6 @@ enum AkAudioOutputType
 	AkOutput_None = 0,		///< Used for uninitialized type, do not use.
 	AkOutput_Dummy,			///< Dummy output, simply eats the audio stream and outputs nothing.
 	AkOutput_Main,			///< Main output.  This cannot be used with AddSecondaryOutput, but can be used to query information about the main output (GetSpeakerConfiguration for example).	
-	AkOutput_MergeToMain,	///< This output will mix back its content to the main output, after the master mix.
 	AkOutput_NumBuiltInOutputs,		///< Do not use.
 	AkOutput_Plugin			///< Specify if using Audio Device Plugin Sink.
 };

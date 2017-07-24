@@ -21,8 +21,8 @@ under the Apache License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES
 OR CONDITIONS OF ANY KIND, either express or implied. See the Apache License for
 the specific language governing permissions and limitations under the License.
 
-  Version: 2016.1  Build: 5775
-  Copyright (c) 2016 Audiokinetic Inc.
+  Version: v2017.1.0  Build: 6302
+  Copyright (c) 2006-2017 Audiokinetic Inc.
 *******************************************************************************/
 
 #ifndef _AKWWISESDKVERSION_H_
@@ -38,7 +38,7 @@ the specific language governing permissions and limitations under the License.
 //@{
 
 /// Wwise SDK major version
-#define AK_WWISESDK_VERSION_MAJOR				2016
+#define AK_WWISESDK_VERSION_MAJOR				2017
 
 /// Wwise SDK minor version
 #define AK_WWISESDK_VERSION_MINOR				1
@@ -47,16 +47,16 @@ the specific language governing permissions and limitations under the License.
 #define AK_WWISESDK_VERSION_SUBMINOR			0
 
 /// Wwise SDK build number
-#define AK_WWISESDK_VERSION_BUILD				5775
+#define AK_WWISESDK_VERSION_BUILD				6302
 
 /// Wwise SDK build date (year)
-#define AK_WWISESDK_BUILD_YEAR					2016
+#define AK_WWISESDK_BUILD_YEAR					2017
 
 /// Wwise SDK build date (month)
-#define AK_WWISESDK_BUILD_MONTH					5
+#define AK_WWISESDK_BUILD_MONTH					7
 
 /// Wwise SDK build date (day)
-#define AK_WWISESDK_BUILD_DAY					30
+#define AK_WWISESDK_BUILD_DAY					19
 
 //@}
 
@@ -71,13 +71,6 @@ the specific language governing permissions and limitations under the License.
 /// Macro that "converts" a numeric define to a string
 #define AK_WWISESDK_NUM2STRING( n )				_AK_WWISESDK_NUM2STRING( n )
 
-/// Macro to determine if there's a subminor version number to add to the full version name
-#if AK_WWISESDK_VERSION_SUBMINOR > 0
-	#define AK_WWISESDK_VERSION_SUBMINOR_POSTFIX		"."	AK_WWISESDK_NUM2STRING( AK_WWISESDK_VERSION_SUBMINOR )
-#else
-	#define AK_WWISESDK_VERSION_SUBMINOR_POSTFIX
-#endif
-
 /// Macro to determine if there's a nickname to add to the full version name
 #if defined( AK_WWISESDK_VERSION_NICKNAME )
 	#define AK_WWISESDK_VERSION_NICKNAME_POSTFIX		"_"	AK_WWISESDK_VERSION_NICKNAME
@@ -85,22 +78,25 @@ the specific language governing permissions and limitations under the License.
 	#define AK_WWISESDK_VERSION_NICKNAME_POSTFIX
 #endif
 
-/// String representing the Wwise SDK version
-#define AK_WWISESDK_VERSIONNAME				"v" AK_WWISESDK_NUM2STRING( AK_WWISESDK_VERSION_MAJOR ) \
+/// String representing the Wwise SDK version without the nickname postfix
+#define AK_WWISESDK_VERSIONNAME_SHORT		"v" AK_WWISESDK_NUM2STRING( AK_WWISESDK_VERSION_MAJOR ) \
 											"."	AK_WWISESDK_NUM2STRING( AK_WWISESDK_VERSION_MINOR ) \
-											AK_WWISESDK_VERSION_SUBMINOR_POSTFIX \
+											"."	AK_WWISESDK_NUM2STRING( AK_WWISESDK_VERSION_SUBMINOR )
+
+/// String representing the Wwise SDK version
+#define AK_WWISESDK_VERSIONNAME				AK_WWISESDK_VERSIONNAME_SHORT \
 											AK_WWISESDK_VERSION_NICKNAME_POSTFIX
 
 /// Wwise SDK branch
-#define AK_WWISESDK_BRANCH					"wwise_v2016.1"
+#define AK_WWISESDK_BRANCH					"wwise_v2017.1"
 
 /// @name Wwise SDK Copyright Notice
 
 //@{
 	/// Wwise SDK copyright notice
-	#define AK_WWISESDK_COPYRIGHT 				"\xA9 2006-2016. Audiokinetic Inc. All rights reserved."
+	#define AK_WWISESDK_COPYRIGHT 				"\xA9 2006-2017. Audiokinetic Inc. All rights reserved."
 	/// Wwise SDK copyright notice
-	#define AK_WWISESDK_COPYRIGHT_CONSOLE 		"(C) 2006-2016. Audiokinetic Inc. All rights reserved."
+	#define AK_WWISESDK_COPYRIGHT_CONSOLE 		"(C) 2006-2017. Audiokinetic Inc. All rights reserved."
 //@}
 
 #define AK_WWISESDK_VERSION_COMBINED ((AK_WWISESDK_VERSION_MAJOR<<8) | AK_WWISESDK_VERSION_MINOR)
