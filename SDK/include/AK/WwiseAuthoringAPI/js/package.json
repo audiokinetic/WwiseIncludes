@@ -1,0 +1,14 @@
+{
+  "name": "waapi",
+  "version": "2017.1.0",
+  "description": "Wwise Authoring API",
+  "main": "index.js",
+  "scripts": {
+  },
+  "keywords": [
+    "wwise",
+    "waapi"
+  ],  
+  "author": "Audiokinetic Inc.",
+  "license": "Apache-2.0"
+}
