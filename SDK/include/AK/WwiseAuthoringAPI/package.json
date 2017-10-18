@@ -1,0 +1,19 @@
+{
+  "name": "waapi",
+  "version": "2017.1.0",
+  "description": "Wwise Authoring API",
+  "main": "./dist/waapi.js",
+  "typings": "./dist/waapi.d.ts",
+  "scripts": {
+    "prepublish": "tsc ts/waapi.ts --outDir dist/ --declaration"
+  },
+  "keywords": [
+    "wwise",
+    "waapi"
+  ],  
+  "author": "Audiokinetic Inc.",
+  "license": "Apache-2.0",
+  "devDependencies": {
+    "typescript": "2.5.3"
+  }  
+}
